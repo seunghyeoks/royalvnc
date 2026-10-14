@@ -42,6 +42,27 @@ public extension VNCConnection {
 	}
 }
 
+// MARK: - Framebuffer
+public extension VNCConnection {
+	/// Asks the server for the whole framebuffer, changed or not.
+	/// Unlike an incremental request, the server always answers this one,
+	/// so a framebuffer update arriving afterwards shows the connection is alive.
+#if canImport(ObjectiveC)
+    @objc
+#endif
+	func requestFullFramebufferUpdate() {
+		guard let framebuffer else { return }
+
+		let request = VNCProtocol.FramebufferUpdateRequest(incremental: false,
+														   xPosition: 0,
+														   yPosition: 0,
+														   width: framebuffer.size.width,
+														   height: framebuffer.size.height)
+
+		enqueueClientToServerMessage(request)
+	}
+}
+
 // MARK: - Mouse Input
 public extension VNCConnection {
 #if canImport(ObjectiveC)
